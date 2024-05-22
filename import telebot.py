@@ -1,8 +1,11 @@
+# что надо вставить
+
+
 import telebot
 
 
-# Создание бота
-bot = telebot.TeleBot('YOUR_TELEGRAM_BOT_TOKEN')
+# Создание бота                  удаляем
+bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
 
 # Словарь для отслеживания состояния пользователей
 user_state = {}
@@ -24,7 +27,7 @@ def check_email_domain(email):
             return True
     return False
 
-# Обработчик команды /start
+# Обработчик команды /start                          вставляем
 @bot.message_handler(commands=['start'])
 def handle_start(message):
     chat_id = message.chat.id
@@ -32,7 +35,7 @@ def handle_start(message):
     # Установка состояния пользователя на 'enter_name'
     user_state[chat_id] = 'enter_name'
 
-# Обработчик ввода пользователя во время ввода имени
+# Обработчик ввода пользователя во время ввода имени                это вставляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_name')
 def handle_name(message):
     chat_id = message.chat.id
@@ -41,7 +44,7 @@ def handle_name(message):
     # Установка состояния пользователя на 'enter_email'
     user_state[chat_id] = 'enter_email'
 
-# Обработчик ввода пользователя во время ввода адреса электронной почты
+# Обработчик ввода пользователя во время ввода адреса электронной почты               вставляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_email')
 def handle_email(message):
     chat_id = message.chat.id
@@ -51,10 +54,10 @@ def handle_email(message):
         return
     bot.send_message(chat_id, 'Введите пароль от вашей почты:')
     user_tokens[chat_id] = {'email': user_email}
-    # Установка состояния пользователя на 'enter_password'
+    # Установка состояния пользователя на 'enter_password'                  вставляем
     user_state[chat_id] = 'enter_password'
 
-# Обработчик ввода пользователя во время ввода пароля
+# Обработчик ввода пользователя во время ввода пароля                     вставляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_password')
 def handle_password(message):
     chat_id = message.chat.id
@@ -64,7 +67,7 @@ def handle_password(message):
     # Установка состояния пользователя на 'enter_recipient_email'
     user_state[chat_id] = 'enter_recipient_email'
 
-# Обработчик ввода пользователя во время ввода адреса получателя
+# Обработчик ввода пользователя во время ввода адреса получателя                     вставляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_recipient_email')
 def handle_recipient_email(message):
     chat_id = message.chat.id
@@ -80,7 +83,7 @@ def handle_recipient_email(message):
     # Установка состояния пользователя на 'enter_message'
     user_state[chat_id] = 'enter_message'
 
-# Обработчик ввода пользователя во время составления сообщения
+# Обработчик ввода пользователя во время составления сообщения                       вставляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_message')
 def handle_message(message):
     chat_id = message.chat.id
@@ -88,7 +91,7 @@ def handle_message(message):
     recipient_email = user_tokens[chat_id]['recipient_email']
     subject = f'Сообщение от {sender_name}'
     message_text = f'From: {sender_name}\n\n{message.text}'
-    # Попытка отправить сообщение
+    # Попытка отправить сообщение               вставляем
     try:
         send_email(user_tokens[chat_id]['email'], user_tokens[chat_id]['password'], recipient_email, subject, message_text)
         bot.send_message(chat_id, 'Сообщение успешно отправлено!')
@@ -96,5 +99,5 @@ def handle_message(message):
     except Exception as e:
         bot.send_message(chat_id, f'Ошибка при отправке сообщения: {str(e)}')
 
-# Запуск бота
+# Запуск бота          удаляем
 bot.polling()

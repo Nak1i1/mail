@@ -1,3 +1,6 @@
+# это куда вставляем
+
+
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import requests
@@ -5,18 +8,29 @@ import time
 import sqlite3
 import imaplib
 import email
-from email.header import decode_header
+from email.header import decode_header          # не понятно почему серым горит
 from validate_email_address import validate_email
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 # Инициализация подключения к базе данных SQLite
-connection = sqlite3.connect('database_name.db')
+connection = sqlite3.connect('users.db')
 cursor = connection.cursor()
 
+# Создание таблицы для хранения данных пользователей
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        chat_id INTEGER PRIMARY KEY,
+        email TEXT,
+        password TEXT
+    )
+''')
+connection.commit()
+
+
 # Инициализация Telegram Bot
-bot = telebot.TeleBot('ВАШ_ТОКЕН_ТЕЛЕГРАМ_БОТА')
+bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
 
 # Словарь для хранения токенов пользователей
 user_tokens = {}
@@ -113,7 +127,7 @@ def compose_message(message):
     # Установка состояния пользователя на 'enter_name'
     user_state[chat_id] = 'enter_name'
 
-# Обработчик ввода пользователя во время составления сообщения
+# Обработчик ввода пользователя во время составления сообщения           удаляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_name')
 def handle_name(message):
     chat_id = message.chat.id
@@ -122,7 +136,7 @@ def handle_name(message):
     # Установка состояния пользователя на 'enter_message'
     user_state[chat_id] = 'enter_message'
 
-# Обработчик ввода пользователя во время составления сообщения
+# Обработчик ввода пользователя во время составления сообщения                удаляем
 @bot.message_handler(func=lambda message: message.chat.id in user_state and user_state[message.chat.id] == 'enter_message')
 def handle_message(message):
     chat_id = message.chat.id
@@ -130,7 +144,7 @@ def handle_message(message):
     recipient_email = 'ПОЧТА_ПОЛУЧАТЕЛЯ@example.com'  # Введите адрес электронной почты получателя здесь
     subject = f'Сообщение от {sender_name}'
     message_text = f'From: {sender_name}\n\n{message.text}'
-    # Попытка отправить сообщение
+    # Попытка отправить сообщение                удаляем
     try:
         send_email(user_tokens[chat_id]['email'], message.text, recipient_email, subject, message_text)
         bot.send_message(chat_id, 'Сообщение успешно отправлено!')
@@ -138,7 +152,7 @@ def handle_message(message):
     except Exception as e:
         bot.send_message(chat_id, f'Ошибка при отправке сообщения: {str(e)}')
 
-# Функция для отправки электронного сообщения
+# Функция для отправки электронного сообщения                  или оставляем или удаляем, не знаю.
 def send_email(sender_email, sender_password, recipient_email, subject, message_text):
     # Конфигурация SMTP
     smtp_server = 'smtp.yandex.ru'

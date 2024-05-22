@@ -2,7 +2,9 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import requests
 import time
+import sqlite3
 
+connection = sqlite3.connect('database_name.db')
 bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
 
 # хранения токенов авторизации пользователей

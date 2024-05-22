@@ -5,6 +5,8 @@ import time
 import sqlite3
 
 connection = sqlite3.connect('database_name.db')
+cursor = connection.cursor()
+
 bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
 
 # хранения токенов авторизации пользователей
@@ -21,7 +23,7 @@ def start(message):
 # "Войти"
 @bot.message_handler(func=lambda message: message.text == 'Войти')
 def login(message):
-    auth_url = 'https://oauth.yandex.ru/authorize?response_type=code&client_id=YOUR_CLIENT_ID'    #Токен?, откуда
+    auth_url = 'https://oauth.yandex.ru/authorize?response_type=code&client_id=0741a9ab2afd4dd3b39edddfc5b7b9bb'    #Токен?, откуда
     bot.send_message(message.chat.id, 'Авторизуйтесь, перейдя по ссылке: ' + auth_url)
 
 # Получение кода авторизации
@@ -33,8 +35,8 @@ def get_auth_code(message):
     token_params = {
         'grant_type': 'authorization_code',
         'code': code,
-        'client_id': 'YOUR_CLIENT_ID',      
-        'client_secret': 'YOUR_CLIENT_SECRET'   # Откуда
+        'client_id': '0741a9ab2afd4dd3b39edddfc5b7b9bb',      
+        'client_secret': '5eefe297405f482d95226227c4a35967'   # Откуда
     }
     response = requests.post('https://oauth.yandex.ru/token', data=token_params)   # Как ?
     access_token = response.json().get('access_token')

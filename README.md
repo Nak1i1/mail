@@ -1,8 +1,11 @@
 # Все библиотеки
 pip install python-telegram-bot
 
+pip install pytelegrambotapi
+
 pip install requests
 
+pip install validate_email_address
 
 
 # Плюсы:

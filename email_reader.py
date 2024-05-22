@@ -3,6 +3,9 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import requests
 import time
 import sqlite3
+import imaplib
+import email
+from email.header import decode_header
 
 connection = sqlite3.connect('database_name.db')
 cursor = connection.cursor()
@@ -11,6 +14,19 @@ bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
 
 # хранения токенов авторизации пользователей
 user_tokens = {}
+
+# Конфигурационные данные для доступа к почтовому ящику
+email_user = 'your_email@example.com'
+email_pass = 'your_email_password'
+
+# Подключение к почтовому серверу
+mail = imaplib.IMAP4_SSL("imap.example.com")
+
+# Аутентификация
+mail.login(email_user, email_pass)
+
+# Выбор почтового ящика
+mail.select('inbox')
 
 # /start
 @bot.message_handler(commands=['start'])
@@ -23,7 +39,7 @@ def start(message):
 # "Войти"
 @bot.message_handler(func=lambda message: message.text == 'Войти')
 def login(message):
-    auth_url = 'https://oauth.yandex.ru/authorize?response_type=code&client_id=0741a9ab2afd4dd3b39edddfc5b7b9bb'    #Токен?, откуда
+    auth_url = 'https://oauth.yandex.ru/authorize?response_type=code&client_id=0741a9ab2afd4dd3b39edddfc5b7b9bb'
     bot.send_message(message.chat.id, 'Авторизуйтесь, перейдя по ссылке: ' + auth_url)
 
 # Получение кода авторизации
@@ -36,9 +52,9 @@ def get_auth_code(message):
         'grant_type': 'authorization_code',
         'code': code,
         'client_id': '0741a9ab2afd4dd3b39edddfc5b7b9bb',      
-        'client_secret': '5eefe297405f482d95226227c4a35967'   # Откуда
+        'client_secret': '5eefe297405f482d95226227c4a35967'
     }
-    response = requests.post('https://oauth.yandex.ru/token', data=token_params)   # Как ?
+    response = requests.post('https://oauth.yandex.ru/token', data=token_params)
     access_token = response.json().get('access_token')
     
     if access_token:

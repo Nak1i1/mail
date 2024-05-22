@@ -7,7 +7,7 @@ import requests
 import time
 import sqlite3
 import imaplib
-import email
+import email    # не скачивается
 from email.header import decode_header          # не понятно почему серым горит
 from validate_email_address import validate_email
 import smtplib

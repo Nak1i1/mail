@@ -8,7 +8,7 @@ import time
 import sqlite3
 import imaplib
 import email    # не скачивается
-from email.header import decode_header          # не понятно почему серым горит
+from email.header import Header          # не понятно почему серым горит
 from validate_email_address import validate_email
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -30,7 +30,7 @@ connection.commit()
 
 
 # Инициализация Telegram Bot
-bot = telebot.TeleBot('b8665d55475585291b5f17efa400647b')
+bot = telebot.TeleBot('6646520584:AAH4k9TR9JF8eeIMHot_UPHXFnXrhAfMD9Y')
 
 # Словарь для хранения токенов пользователей
 user_tokens = {}
@@ -77,7 +77,7 @@ def handle_login(message):
             mail = imaplib.IMAP4_SSL("imap.yandex.ru")
             mail.login(email, password)
             # Если вход успешен, продолжаем мониторить ящик
-            user_state.pop(chat_id)  # Удаление состояния пользователя
+            user_state.pop(chat_id) # Удаление состояния пользователя
             monitor_inbox(chat_id, mail)
             bot.send_message(chat_id, 'Успешно вошли в вашу почту. Теперь бот будет мониторить вашу почту.')
         except imaplib.IMAP4.error:

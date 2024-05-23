@@ -74,7 +74,7 @@ def handle_login(message):
         password = message.text
         # Попытка входа в почтовый ящик пользователя
         try:
-            mail = imaplib.IMAP4_SSL("imap.yandex.ru")
+            mail = imaplib.IMAP4_SSL("imap.yandex.ru", port = 993)
             mail.login(email, password)
             # Если вход успешен, продолжаем мониторить ящик
             user_state.pop(chat_id) # Удаление состояния пользователя

@@ -3,24 +3,24 @@ from bot.password_bot import bot_token
 import telebot
 import imaplib
 import time
-import sqlite3
+# import sqlite3
 import email
 from email.header import Header
 from validate_email_address import validate_email
 
 # Инициализация подключения к базе данных SQLite
-connection = sqlite3.connect('users.db')
-cursor = connection.cursor()
+# connection = sqlite3.connect('users.db')
+# cursor = connection.cursor()
 
-# Создание таблицы для хранения данных пользователей
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        chat_id INTEGER PRIMARY KEY,
-        email TEXT,
-        password TEXT
-    )
-''')
-connection.commit()
+# # Создание таблицы для хранения данных пользователей
+# cursor.execute('''
+#     CREATE TABLE IF NOT EXISTS users (
+#         chat_id INTEGER PRIMARY KEY,
+#         email TEXT,
+#         password TEXT
+#     )
+# ''')
+# connection.commit()
 
 # Инициализация Telegram Bot
 bot = telebot.TeleBot(bot_token)

@@ -5,6 +5,7 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import sqlite3
 from validate_email_address import validate_email
 import imaplib
+from receiving_letter import monitor_inbox  # Import the monitoring function
 
 # Инициализация подключения к базе данных SQLite
 connection = sqlite3.connect('users.db')
@@ -39,7 +40,6 @@ def start(message):
 @bot.message_handler(func=lambda message: message.text == 'Войти')
 def login(message):
     bot.send_message(message.chat.id, 'Введите вашу почту:')
-    # Установка состояния пользователя на 'enter_email'
     user_state[message.chat.id] = 'enter_email'
 
 # Обработчик ввода пользователя во время процесса входа
@@ -48,26 +48,25 @@ def handle_login(message):
     chat_id = message.chat.id
     state = user_state.get(chat_id)
     if state == 'enter_email':
-        # Проверка корректности адреса электронной почты
         email = message.text.lower()
         if not validate_email(email):
             bot.send_message(chat_id, 'Некорректный адрес электронной почты. Пожалуйста, введите корректный адрес почты.')
             return
-        user_state[chat_id] = 'enter_password'
+        user_state[chat_id] = {'state': 'enter_password', 'email': email}
         bot.send_message(chat_id, 'Теперь введите пароль от вашей почты:')
-    elif state == 'enter_password':
-        # Извлечение почты и пароля из user_tokens
-        email = user_state[chat_id]['email']
+    elif state['state'] == 'enter_password':
+        email = state['email']
         password = message.text
-        # Попытка входа в почтовый ящик пользователя
         try:
-            mail = imaplib.IMAP4_SSL("imap.yandex.ru", port = 993)
+            mail = imaplib.IMAP4_SSL("imap.yandex.ru", port=993)
             mail.login(email, password)
-            # Если вход успешен, продолжаем мониторить ящик
-            user_state.pop(chat_id) # Удаление состояния пользователя
+            cursor.execute('INSERT OR REPLACE INTO users (chat_id, email, password) VALUES (?, ?, ?)', (chat_id, email, password))
+            connection.commit()
+            user_state.pop(chat_id)
             bot.send_message(chat_id, 'Успешно вошли в вашу почту. Теперь бот будет мониторить вашу почту.')
+            # Start monitoring the inbox
+            monitor_inbox(chat_id, mail)
         except imaplib.IMAP4.error:
-            # Если вход не удался, предложим пользователю повторить попытку
             bot.send_message(chat_id, 'Неверный адрес электронной почты или пароль. Пожалуйста, попробуйте еще раз.')
             user_state[chat_id] = 'enter_email'
 

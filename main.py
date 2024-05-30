@@ -85,4 +85,3 @@ if __name__ == "__main__":
         loop.run_until_complete(
             functions.send_message(config.bot_key, text, config.chat_id)
         )
-        
